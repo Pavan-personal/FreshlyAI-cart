@@ -83,6 +83,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeFromCartFull = useCallback((id: number, name?: string) => {
     setCart((prev) => {
+      if (!prev.find((item) => item.id === id)) return prev;
       setTimeout(() => toast(`${name || "Item"} removed from cart`, { id: `cart-${id}` }), 0);
       return prev.filter((item) => item.id !== id);
     });
