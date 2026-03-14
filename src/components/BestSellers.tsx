@@ -147,19 +147,70 @@ function FeaturedCard() {
 export default function BestSellers() {
   return (
     <section style={{ padding: "40px 0" }}>
+      <style>{`
+        .bestsellers-header {
+          display: flex;
+          align-items: baseline;
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+        .bestsellers-grid {
+          display: grid;
+          grid-template-columns: 1fr 1.1fr 1fr;
+          gap: 20px;
+          align-items: stretch;
+        }
+        .bestsellers-featured {
+          display: flex;
+          order: 0;
+        }
+        .bestsellers-left { order: 0; }
+        .bestsellers-featured { order: 0; }
+        .bestsellers-right { order: 0; }
+        @media (max-width: 1024px) {
+          .bestsellers-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+          .bestsellers-left { order: 1; }
+          .bestsellers-right { order: 2; }
+          .bestsellers-featured {
+            order: 3;
+            grid-column: 1 / -1;
+          }
+          .bestsellers-featured > div {
+            max-width: 500px;
+            margin: 0 auto;
+          }
+        }
+        @media (max-width: 768px) {
+          .bestsellers-grid {
+            grid-template-columns: 1fr;
+          }
+          .bestsellers-featured {
+            order: 0;
+            grid-column: 1;
+          }
+          .bestsellers-left { order: 1; }
+          .bestsellers-right { order: 2; }
+          .bestsellers-header {
+            flex-direction: column;
+            gap: 6px;
+          }
+        }
+      `}</style>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 24 }}>
+        <div className="bestsellers-header">
           <h2 style={{ fontSize: 22, fontWeight: 700, color: "#1a1a2e", margin: 0 }}>Best Sellers</h2>
           <p style={{ fontSize: 13, color: "#999", margin: 0 }}>Dont miss this opportunity at a special discount just for this week.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr 1fr", gap: 20, alignItems: "stretch" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="bestsellers-grid">
+          <div className="bestsellers-left" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {leftCards.map((item, i) => <SmallCard key={item.id} item={item} timerIdx={i} />)}
           </div>
-          <div style={{ display: "flex" }}>
+          <div className="bestsellers-featured" style={{ display: "flex" }}>
             <FeaturedCard />
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div className="bestsellers-right" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {rightCards.map((item, i) => <SmallCard key={item.id} item={item} timerIdx={i} />)}
           </div>
         </div>

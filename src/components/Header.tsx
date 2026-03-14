@@ -79,22 +79,90 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <header style={{ fontFamily: "var(--font-inter), Arial, sans-serif" }}>
+      <style>{`
+        .hdr-topbar-text { font-size: 13px; }
+        .hdr-main { display: flex; align-items: center; height: 76px; gap: 20px; }
+        .hdr-logo { font-size: 34px; }
+        .hdr-cat-pill { display: flex; }
+        .hdr-search-wrap { display: flex; flex: 1; }
+        .hdr-icons { display: flex; }
+        .hdr-hamburger { display: none; padding: 5px; background: none; border: none; cursor: pointer; color: #555; }
+        .hdr-navbar { display: flex; width: 100%; }
+        .hdr-navbar-right { display: flex; }
+        .hdr-catbar { display: flex; width: 100%; }
+        .hdr-mobile-search { display: none; }
+        .hdr-mobile-menu-overlay { display: none; }
+        .hdr-mobile-drawer { display: none; }
+
+        @media (max-width: 1024px) {
+          .hdr-navbar-right { display: none; }
+        }
+
+        @media (max-width: 768px) {
+          .hdr-topbar-text { font-size: 11px; padding: 0 12px; }
+          .hdr-main { height: 56px; gap: 10px; padding: 0 14px !important; }
+          .hdr-logo { font-size: 26px; }
+          .hdr-cat-pill { display: none; }
+          .hdr-search-wrap { display: none; }
+          .hdr-hamburger { display: flex; }
+          .hdr-navbar { display: none; }
+          .hdr-catbar { display: none; }
+          .hdr-mobile-search {
+            display: flex;
+            padding: 0 14px 8px;
+            background: #fff;
+          }
+          .hdr-mobile-search .mob-search-inner {
+            display: flex; align-items: center; height: 38px;
+            border: 1px solid #E8E8E8; border-radius: 50px;
+            background: #F3F3F3; overflow: hidden; width: 100%;
+          }
+          .hdr-mobile-search .mob-search-inner input {
+            flex: 1; height: 100%; padding: 0 14px; font-size: 13px;
+            color: #666; outline: none; border: none; background: #F3F3F3;
+          }
+          .hdr-mobile-search .mob-search-inner button {
+            display: flex; align-items: center; padding: 0 14px; height: 100%;
+            background: #F5C518; border: none; cursor: pointer; flex-shrink: 0;
+          }
+          .hdr-mobile-menu-overlay.open {
+            display: block; position: fixed; inset: 0; z-index: 999;
+            background: rgba(0,0,0,0.4);
+          }
+          .hdr-mobile-drawer {
+            display: block;
+            position: fixed; top: 0; left: 0; bottom: 0; width: 280px;
+            background: #fff; z-index: 1000; overflow-y: auto;
+            transform: translateX(-100%); transition: transform 0.25s ease;
+            padding: 20px 0;
+          }
+          .hdr-mobile-drawer.open { transform: translateX(0); }
+        }
+
+        @media (max-width: 480px) {
+          .hdr-main { height: 50px; gap: 8px; padding: 0 10px !important; }
+          .hdr-logo { font-size: 22px; }
+        }
+      `}</style>
+
       {/* TOP BAR */}
       <div style={{ width: "100%", background: "#634C9F", padding: "8px 0", textAlign: "center" }}>
-        <p style={{ color: "white", fontSize: 13, fontWeight: 500, letterSpacing: 0.3, margin: 0 }}>
+        <p className="hdr-topbar-text" style={{ color: "white", fontWeight: 500, letterSpacing: 0.3, margin: 0 }}>
           FREE delivery &amp; 40% Discount for next 3 orders! Place your 1st order in
         </p>
       </div>
 
       {/* MAIN HEADER */}
       <div style={{ width: "100%", background: "#fff", padding: "6px" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", height: 76, gap: 20 }}>
-          <span style={{ fontFamily: "var(--font-pacifico)", fontSize: 34, color: "#634C9F", flexShrink: 0, lineHeight: 1 }}>Freshly</span>
+        <div className="hdr-main" style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px" }}>
+          <span className="hdr-logo" style={{ fontFamily: "var(--font-pacifico)", color: "#634C9F", flexShrink: 0, lineHeight: 1 }}>Freshly</span>
 
-          {/* All Categories pill */}
-          <div ref={catRef} style={{ position: "relative", display: "flex", alignItems: "center", gap: 8, borderRadius: 50, padding: "0 16px", height: 42, cursor: "pointer", flexShrink: 0, border: "1px solid #E8E8E8" }}
+          {/* All Categories pill - hidden on mobile */}
+          <div ref={catRef} className="hdr-cat-pill" style={{ position: "relative", alignItems: "center", gap: 8, borderRadius: 50, padding: "0 16px", height: 42, cursor: "pointer", flexShrink: 0, border: "1px solid #E8E8E8" }}
             onClick={() => setShowCategories(!showCategories)}>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <span style={{ display: "block", width: 16, height: 2, background: "#276749", borderRadius: 1 }} />
@@ -120,9 +188,9 @@ export default function Header() {
             )}
           </div>
 
-          {/* Search bar */}
-          <div ref={searchRef} style={{ flex: 1, position: "relative" }}>
-            <div style={{ display: "flex", alignItems: "center", height: 42, border: "1px solid #E8E8E8", borderRadius: 50, background: "#F3F3F3", overflow: "hidden" }}>
+          {/* Search bar - hidden on mobile (replaced by mobile search below) */}
+          <div ref={searchRef} className="hdr-search-wrap" style={{ position: "relative" }}>
+            <div style={{ display: "flex", alignItems: "center", height: 42, border: "1px solid #E8E8E8", borderRadius: 50, background: "#F3F3F3", overflow: "hidden", width: "100%" }}>
               <input type="text" placeholder="Type Your Products ..." value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setShowSearch(true); }}
                 onFocus={() => setShowSearch(true)}
@@ -161,7 +229,7 @@ export default function Header() {
           </div>
 
           {/* Right icons */}
-          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+          <div className="hdr-icons" style={{ alignItems: "center", flexShrink: 0 }}>
             <button style={{ padding: 5, border: "none", background: "rgba(36, 248, 36, 0.12)", borderRadius: 1000, cursor: "pointer", display: "flex", color: "#555" }}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#276749" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
@@ -265,18 +333,49 @@ export default function Header() {
               )}
             </div>
 
-            <button style={{ padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555", marginLeft: 8 }}>
-              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="0" y1="1" x2="20" y2="1" /><line x1="0" y1="7" x2="15" y2="7" /><line x1="0" y1="13" x2="20" y2="13" />
+            {/* Hamburger - mobile only */}
+            <button className="hdr-hamburger" onClick={() => setMobileMenuOpen(true)} style={{ marginLeft: 4 }}>
+              <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="0" y1="1" x2="22" y2="1" /><line x1="0" y1="8" x2="16" y2="8" /><line x1="0" y1="15" x2="22" y2="15" />
               </svg>
             </button>
           </div>
         </div>
       </div>
 
-      {/* NAVIGATION BAR */}
-      <div style={{ width: "100%", background: "#fff", padding: "6px" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      {/* MOBILE SEARCH BAR - visible only on mobile */}
+      <div className="hdr-mobile-search" style={{ position: "relative" }}>
+        <div className="mob-search-inner">
+          <input type="text" placeholder="Search products..." value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setShowSearch(true); }}
+            onFocus={() => setShowSearch(true)} />
+          <button onClick={() => { if (searchQuery.trim()) setShowSearch(true); }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+        </div>
+        {showSearch && searchResults.length > 0 && (
+          <div style={{ position: "absolute", top: "100%", left: 14, right: 14, background: "#fff", border: "1px solid #eee", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", padding: "8px 0", zIndex: 200, maxHeight: 300, overflowY: "auto" }}>
+            {searchResults.map((p) => (
+              <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 14px", fontSize: 13, color: "#333" }}>
+                <img src={p.image} alt={p.name} style={{ width: 32, height: 32, objectFit: "contain", borderRadius: 4 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 500, fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                  <div style={{ fontSize: 11, color: "#27ae60", fontWeight: 600 }}>${p.discountPrice.toFixed(2)}</div>
+                </div>
+                <button onClick={(e) => { e.stopPropagation(); addToCart(p.id, p.name); }} style={{ background: "none", border: "1px solid #eee", borderRadius: "50%", width: 26, height: 26, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#27ae60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* NAVIGATION BAR - hidden on mobile */}
+      <div className="hdr-navbar" style={{ width: "100%", background: "#fff", padding: "6px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
           <ul style={{ border: "1px solid rgba(0, 0, 0, 0.1)", borderRadius: 8, display: "flex", alignItems: "center", listStyle: "none", margin: 0, padding: 0 }}>
             {navItems.map((item) => (
               <li key={item.label}>
@@ -288,7 +387,7 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div className="hdr-navbar-right" style={{ alignItems: "center", gap: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#333", whiteSpace: "nowrap" }}>
               <TbRosetteDiscount style={{ fontSize: 20, color: "#1a6b4a" }} />
               Weekly Discount!
@@ -298,9 +397,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* CATEGORY BAR */}
-      <div style={{ width: "100%", background: "#fff", borderBottom: "1px solid #eee", padding: "16px 0" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      {/* CATEGORY BAR - hidden on mobile */}
+      <div className="hdr-catbar" style={{ width: "100%", background: "#fff", borderBottom: "1px solid #eee", padding: "16px 0" }}>
+        <div className="container overflow-scroll" style={{ margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           {categories.map((cat, index) => (
             <div key={cat.label} style={{ display: "flex", alignItems: "center" }}>
               <div onClick={() => scrollToFeatured(cat.filter)} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", padding: "4px 6px", borderRadius: 8 }}>
@@ -321,6 +420,53 @@ export default function Header() {
               )}
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* MOBILE DRAWER MENU */}
+      <div className={`hdr-mobile-menu-overlay ${mobileMenuOpen ? "open" : ""}`} onClick={() => setMobileMenuOpen(false)} />
+      <div className={`hdr-mobile-drawer ${mobileMenuOpen ? "open" : ""}`}>
+        {/* Drawer header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px 16px", borderBottom: "1px solid #eee" }}>
+          <span style={{ fontFamily: "var(--font-pacifico)", fontSize: 26, color: "#634C9F" }}>Freshly</span>
+          <button onClick={() => setMobileMenuOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Nav links */}
+        <div style={{ padding: "12px 0" }}>
+          {navItems.map((item) => (
+            <a key={item.label} href="#" onClick={(e) => { e.preventDefault(); setActiveNav(item.label); setMobileMenuOpen(false); }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", fontSize: 15, fontWeight: activeNav === item.label ? 600 : 500, color: activeNav === item.label ? "#1a6b4a" : "#333", textDecoration: "none", borderBottom: "1px solid #f5f5f5" }}>
+              {item.label}
+              {item.hasDropdown && <ChevronDown />}
+            </a>
+          ))}
+        </div>
+
+        {/* Categories in drawer */}
+        <div style={{ padding: "8px 20px 4px", fontSize: 12, fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: 0.5 }}>Categories</div>
+        {categories.map((cat) => (
+          <div key={cat.label} onClick={() => { scrollToFeatured(cat.filter); setMobileMenuOpen(false); }}
+            style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 20px", cursor: "pointer" }}>
+            <img src={cat.img} alt={cat.label} style={{ width: 28, height: 28, objectFit: "contain" }} />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: "#333" }}>{cat.label}</div>
+              <div style={{ fontSize: 10, color: "#aaa" }}>{cat.count}</div>
+            </div>
+          </div>
+        ))}
+
+        {/* Discount + phone */}
+        <div style={{ padding: "16px 20px", borderTop: "1px solid #eee", marginTop: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#333", marginBottom: 10 }}>
+            <TbRosetteDiscount style={{ fontSize: 18, color: "#1a6b4a" }} />
+            Weekly Discount!
+          </div>
+          <img src="/navbar/mobileno.webp" alt="Hotline Number" style={{ height: 48, width: "auto", objectFit: "contain" }} />
         </div>
       </div>
     </header>

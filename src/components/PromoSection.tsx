@@ -28,9 +28,88 @@ const Star = ({ filled, half }: { filled: boolean; half?: boolean }) => (
 export default function PromoSection() {
   return (
     <section className="container" style={{ margin: "0 auto", padding: "32px 24px 0" }}>
+      <style>{`
+        .promo-banners {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 16px;
+          margin-bottom: 36px;
+        }
+        .promo-sellers {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+        }
+        .safety-banner {
+          display: flex;
+          align-items: center;
+          overflow: visible;
+          padding: 0 32px;
+        }
+        .safety-banner-right {
+          display: flex;
+          flex: 1;
+          align-items: center;
+          justify-content: center;
+          gap: 50px;
+          flex-shrink: 0;
+          overflow: visible;
+        }
+        .safety-percent {
+          font-size: 64px;
+        }
+        .safety-img {
+          height: 80px;
+          scale: 1.2;
+          translate: 0 -10px;
+        }
+        @media (max-width: 1024px) {
+          .promo-sellers {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media (max-width: 768px) {
+          .promo-banners {
+            grid-template-columns: 1fr;
+          }
+          .safety-banner {
+            flex-direction: column;
+            padding: 24px 20px;
+            text-align: center;
+          }
+          .safety-banner-right {
+            margin-top: 16px;
+            gap: 24px;
+          }
+          .safety-percent {
+            font-size: 48px;
+          }
+          .safety-img {
+            height: 70px;
+            scale: 1.15;
+            translate: 0 -8px;
+          }
+        }
+        @media (max-width: 480px) {
+          .promo-sellers {
+            grid-template-columns: 1fr;
+          }
+          .safety-banner-right {
+            gap: 16px;
+          }
+          .safety-percent {
+            font-size: 36px;
+          }
+          .safety-img {
+            height: 60px;
+            scale: 1.1;
+            translate: 0 -6px;
+          }
+        }
+      `}</style>
 
       {/* 3 BANNERS */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 36 }}>
+      <div className="promo-banners">
         {/* Banner 1 - Creamy Fruits */}
         <div style={{
           borderRadius: 12, overflow: "hidden", height: 180,
@@ -96,7 +175,7 @@ export default function PromoSection() {
           <span style={{ flex: 1, height: 1, background: "#eee" }} />
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+        <div className="promo-sellers">
           {sellers.map((s) => (
             <div key={s.name} style={{
               background: "#e9e8e8ad", border: "1px solid #eee", borderRadius: 10,
@@ -127,11 +206,10 @@ export default function PromoSection() {
       </div>
 
       {/* SAFETY BANNER */}
-      <div style={{
+      <div className="safety-banner" style={{
         background: "linear-gradient(135deg, #d5d0e8, #c4bde0)",
-        borderRadius: 12, padding: "0 32px",
-        display: "flex", alignItems: "center",
-        overflow: "visible", marginBottom: 32, position:"relative", 
+        borderRadius: 12,
+        marginBottom: 32, position:"relative", 
       }}>
         <div style={{ flex: 1 }}>
           <h3 style={{ fontSize: 20, fontWeight: 700, color: "#2d2d4e", margin: "0 0 6px", lineHeight: 1.3 }}>
@@ -141,9 +219,9 @@ export default function PromoSection() {
             The only supermarket that makes your life easier, makes you enjoy life and makes it better
           </p>
         </div>
-        <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: "center", gap: 50, flexShrink: 0, overflow: "visible" }}>
-          <span style={{ fontSize: 64, fontWeight: 800, background: "linear-gradient(90deg, rgba(140,120,180,0.5) 0%, rgba(180,120,200,0.8) 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>%50</span>
-          <img src="/special-img.png" alt="Discount product" style={{ height: 80, width: "auto", zIndex: 9, objectFit: "contain", scale: "1.2", translate: "0 -10px"}} />
+        <div className="safety-banner-right">
+          <span className="safety-percent" style={{ fontWeight: 800, background: "linear-gradient(90deg, rgba(140,120,180,0.5) 0%, rgba(180,120,200,0.8) 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>%50</span>
+          <img className="safety-img" src="/special-img.png" alt="Discount product" style={{ width: "auto", zIndex: 9, objectFit: "contain" }} />
         </div>
       </div>
     </section>

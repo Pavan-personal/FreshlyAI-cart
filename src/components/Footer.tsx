@@ -3,9 +3,43 @@
 export default function Footer() {
   return (
     <footer style={{ background: "#6B4C8A" }}>
+      <style>{`
+        .footer-grid {
+          display: grid;
+          grid-template-columns: 1.4fr 1fr 1fr 1fr 1.2fr;
+          gap: 32px;
+        }
+        .footer-bottom-bar {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 64px;
+        }
+        @media (max-width: 768px) {
+          .footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 28px 24px;
+          }
+          .footer-grid > div:first-child {
+            grid-column: 1 / -1;
+          }
+          .footer-bottom-bar {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+          }
+        }
+        @media (max-width: 480px) {
+          .footer-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+        }
+      `}</style>
+
       {/* Main footer */}
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "48px 24px 36px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1fr 1.2fr", gap: 32 }}>
+        <div className="footer-grid">
 
           {/* Brand column */}
           <div>
@@ -93,7 +127,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.15)", padding: "18px 0" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "end", gap: 64 }}>
+        <div className="footer-bottom-bar" style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px" }}>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: 0 }}>
             copyright. &#169; 2025 All right reserved
           </p>

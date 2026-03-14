@@ -34,9 +34,25 @@ export default function TrendingProducts() {
   const { addToCart, toggleWishlist, isWishlisted, getItemQty } = useCart();
   return (
     <section style={{ padding: "40px 0" }}>
+      <style>{`
+        .trending-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 16px;
+        }
+        @media (max-width: 1024px) {
+          .trending-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+          .trending-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+          .trending-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; }
+        }
+      `}</style>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px" }}>
         <h2 style={{ fontSize: 24, fontWeight: 700, color: "#1a1a2e", margin: "0 0 24px" }}>Trending Products</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
+        <div className="trending-grid">
           {trendingProducts.map((p) => {
             const disc = Math.round(((p.price - p.discountPrice) / p.price) * 100);
             const qty = getItemQty(p.id);

@@ -3,36 +3,102 @@
 export default function HeroSection() {
     return (
         <section className="container" style={{ margin: "0 auto", padding: "24px 24px 0" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16, minHeight: 380 }}>
+            <style>{`
+                .hero-grid {
+                    display: grid;
+                    grid-template-columns: 1.4fr 1fr;
+                    gap: 16px;
+                    min-height: 380px;
+                }
+                .hero-right-bottom {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                }
+                .hero-left {
+                    min-height: 340px;
+                    padding: 40px 44px;
+                }
+                .hero-title {
+                    font-family: var(--font-pacifico);
+                    font-size: 52px;
+                    color: white;
+                    line-height: 1.15;
+                    margin: 0 0 4px;
+                    font-weight: 400;
+                }
+                .hero-subtitle { font-size: 22px; }
+                .hero-price { font-size: 28px; }
+                .hero-helper-img { height: 48px; width: auto; }
+                .hero-shop-btn {
+                    padding: 11px 26px;
+                    font-size: 14px;
+                }
+                @media (max-width: 1024px) {
+                    .hero-title { font-size: 38px; }
+                    .hero-subtitle { font-size: 18px; }
+                    .hero-price { font-size: 24px; }
+                    .hero-left { padding: 28px 28px; }
+                }
+                @media (max-width: 768px) {
+                    .hero-grid {
+                        grid-template-columns: 1fr;
+                        min-height: auto;
+                    }
+                    .hero-left {
+                        min-height: 260px;
+                        padding: 24px 24px;
+                    }
+                    .hero-title { font-size: 32px; }
+                    .hero-subtitle { font-size: 16px; }
+                    .hero-price { font-size: 22px; }
+                    .hero-helper-img { height: 36px; }
+                    .hero-shop-btn {
+                        padding: 9px 20px;
+                        font-size: 13px;
+                    }
+                }
+                @media (max-width: 480px) {
+                    .hero-right-bottom {
+                        grid-template-columns: 1fr;
+                    }
+                    .hero-right-bottom > div {
+                        min-height: 160px;
+                    }
+                    .hero-left {
+                        min-height: 220px;
+                        padding: 20px 18px;
+                    }
+                    .hero-title { font-size: 26px; }
+                    .hero-subtitle { font-size: 15px; }
+                    .hero-price { font-size: 20px; }
+                    .hero-helper-img { height: 28px; }
+                }
+            `}</style>
+            <div className="hero-grid">
 
                 {/* LEFT - Big Banner */}
-                <div style={{
+                <div className="hero-left" style={{
                     position: "relative", borderRadius: 14, overflow: "hidden",
                     backgroundImage: "url(/hero/hero_section_b-0.webp)",
                     backgroundSize: "cover", backgroundPosition: "center",
-                    display: "flex", alignItems: "center", padding: "40px 44px"
+                    display: "flex", alignItems: "center",
                 }}>
-                    <div style={{ position: "relative", zIndex: 1, display: "flex", flexFlow: "column", width: "100%" }}>
-                        <div className="flex flex-col gap-2 -bottom-16 absolute">
-                            <img className="h-12 w-fit" src='/hero/hero0helper.png' />
-                            <h1 style={{
-                                fontFamily: "var(--font-pacifico)", fontSize: 52, width: "100%",
-                                color: "white", lineHeight: 1.15, margin: "0 0 4px", fontWeight: 400
-                            }}>
-                                Fresh Organic
-                            </h1>
-                            <p style={{ fontSize: 22, fontWeight: 600, color: "#634C9F", margin: "0 0 6px" }}>
-                                Food For All
-                            </p>
-                            <p style={{ fontSize: 28, fontWeight: 800, color: "#1a1a2e", margin: "0 0 20px" }}>
-                                $59.00
-                            </p>
-                        </div>
-
-                        <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} className="absolute top-24 w-fit" style={{
+                    <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: 4, width: "100%" }}>
+                        <img className="hero-helper-img" src='/hero/hero0helper.png' style={{ objectFit: "contain", alignSelf: "flex-start" }} />
+                        <h1 className="hero-title">
+                            Fresh Organic
+                        </h1>
+                        <p className="hero-subtitle" style={{ fontWeight: 600, color: "#634C9F", margin: "0 0 2px" }}>
+                            Food For All
+                        </p>
+                        <p className="hero-price" style={{ fontWeight: 800, color: "white", margin: "0 0 12px" }}>
+                            $59.00
+                        </p>
+                        <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} className="hero-shop-btn" style={{
                             background: "#634C9F", color: "#fff", border: "none",
-                            padding: "11px 26px", borderRadius: 800, fontSize: 14,
-                            fontWeight: 600, cursor: "pointer"
+                            borderRadius: 800,
+                            fontWeight: 600, cursor: "pointer", width: "fit-content"
                         }}>
                             Shop Now
                         </button>
@@ -68,7 +134,7 @@ export default function HeroSection() {
                     </div>
 
                     {/* Bottom row - 2 cards */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                    <div className="hero-right-bottom">
 
                         {/* Baby Diaper */}
                         <div style={{
