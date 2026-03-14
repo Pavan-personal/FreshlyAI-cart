@@ -1,0 +1,241 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { TbRosetteDiscount } from "react-icons/tb";
+import { useCart } from "@/context/CartContext";
+import products from "@/data/products.json";
+
+const categories = [
+  { img: "/navbar/i1.png", label: "Vegetables", count: "6 Products", filter: "Vegetables" },
+  { img: "/navbar/i2.png", label: "Fresh Fruits", count: "4 Products", filter: "All" },
+  { img: "/navbar/i3.png", label: "Desserts", count: "6 Products", filter: "Desserts" },
+  { img: "/navbar/i4.png", label: "Drinks & Juice", count: "6 Products", filter: "Beverage" },
+  { img: "/navbar/i5.png", label: "Fish & Meats", count: "4 Products", filter: "All" },
+  { img: "/navbar/i6.png", label: "Pets & Animals", count: "4 Products", filter: "All" },
+];
+
+const navItems = [
+  { label: "Home", hasDropdown: true },
+  { label: "Pages", hasDropdown: true },
+  { label: "Shop", hasDropdown: true },
+  { label: "Vendor", hasDropdown: true },
+  { label: "Elements", hasDropdown: true },
+  { label: "Blog", hasDropdown: true },
+  { label: "Contact", hasDropdown: false },
+];
+
+const ChevronDown = () => (
+  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#276749" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2.5 3.75L5 6.25L7.5 3.75" />
+  </svg>
+);
+
+function scrollToFeatured(filter?: string) {
+  const el = document.getElementById("featured-products");
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+    if (filter) {
+      // Dispatch custom event so FeaturedProducts can pick it up
+      window.dispatchEvent(new CustomEvent("setFeaturedFilter", { detail: filter }));
+    }
+  }
+}
+
+export default function Header() {
+  const { getCartCount, getWishlistCount, resetAll, addToCart, toggleWishlist, isWishlisted } = useCart();
+  const [showCategories, setShowCategories] = useState(false);
+  const [activeNav, setActiveNav] = useState("Home");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const catRef = useRef<HTMLDivElement>(null);
+
+  const searchResults = searchQuery.trim().length > 0
+    ? products.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 8)
+    : [];
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setShowSearch(false);
+      if (catRef.current && !catRef.current.contains(e.target as Node)) setShowCategories(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <header style={{ fontFamily: "var(--font-inter), Arial, sans-serif" }}>
+      {/* TOP BAR */}
+      <div style={{ width: "100%", background: "#634C9F", padding: "8px 0", textAlign: "center" }}>
+        <p style={{ color: "white", fontSize: 13, fontWeight: 500, letterSpacing: 0.3, margin: 0 }}>
+          FREE delivery &amp; 40% Discount for next 3 orders! Place your 1st order in
+        </p>
+      </div>
+
+      {/* MAIN HEADER */}
+      <div style={{ width: "100%", background: "#fff", padding: "6px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", height: 76, gap: 20 }}>
+          <span style={{ fontFamily: "var(--font-pacifico)", fontSize: 34, color: "#634C9F", flexShrink: 0, lineHeight: 1 }}>Freshly</span>
+
+          {/* All Categories pill */}
+          <div ref={catRef} style={{ position: "relative", display: "flex", alignItems: "center", gap: 8, borderRadius: 50, padding: "0 16px", height: 42, cursor: "pointer", flexShrink: 0, border: "1px solid #E8E8E8" }}
+            onClick={() => setShowCategories(!showCategories)}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span style={{ display: "block", width: 16, height: 2, background: "#276749", borderRadius: 1 }} />
+              <span style={{ display: "block", width: 12, height: 2, background: "#276749", borderRadius: 1 }} />
+              <span style={{ display: "block", width: 8, height: 2, background: "#276749", borderRadius: 1 }} />
+            </div>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#333", whiteSpace: "nowrap" }}>All Categories</span>
+            <ChevronDown />
+            {showCategories && (
+              <div style={{ position: "absolute", top: 48, left: 0, background: "#fff", border: "1px solid #eee", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", padding: "8px 0", zIndex: 100, minWidth: 220 }}
+                onClick={(e) => e.stopPropagation()}>
+                {categories.map((cat) => (
+                  <div key={cat.label} onClick={() => { scrollToFeatured(cat.filter); setShowCategories(false); }}
+                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", cursor: "pointer", fontSize: 14, color: "#333" }}>
+                    <img src={cat.img} alt={cat.label} style={{ width: 28, height: 28, objectFit: "contain" }} />
+                    <div>
+                      <div style={{ fontWeight: 500 }}>{cat.label}</div>
+                      <div style={{ fontSize: 11, color: "#999" }}>{cat.count}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Search bar */}
+          <div ref={searchRef} style={{ flex: 1, position: "relative" }}>
+            <div style={{ display: "flex", alignItems: "center", height: 42, border: "1px solid #E8E8E8", borderRadius: 50, background: "#F3F3F3", overflow: "hidden" }}>
+              <input type="text" placeholder="Type Your Products ..." value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setShowSearch(true); }}
+                onFocus={() => setShowSearch(true)}
+                style={{ flex: 1, height: "100%", padding: "0 16px", fontSize: 13, color: "#666", outline: "none", border: "none", background: "#F3F3F3" }} />
+              <button onClick={() => { if (searchQuery.trim()) setShowSearch(true); }} style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 18px", height: "100%", background: "#F5C518", fontSize: 13, fontWeight: 600, color: "#333", border: "none", cursor: "pointer", flexShrink: 0 }}>
+                Search
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </button>
+            </div>
+            {showSearch && searchResults.length > 0 && (
+              <div style={{ position: "absolute", top: 46, left: 0, right: 0, background: "#fff", border: "1px solid #eee", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", padding: "8px 0", zIndex: 200, maxHeight: 360, overflowY: "auto" }}>
+                {searchResults.map((p) => (
+                  <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 16px", fontSize: 14, color: "#333" }}>
+                    <img src={p.image} alt={p.name} style={{ width: 36, height: 36, objectFit: "contain", borderRadius: 4 }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 500, fontSize: 13, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                      <div style={{ fontSize: 12, color: "#27ae60", fontWeight: 600 }}>${p.discountPrice.toFixed(2)} <span style={{ color: "#aaa", textDecoration: "line-through", fontWeight: 400 }}>${p.price.toFixed(2)}</span></div>
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id, p.name); }} style={{ background: "none", border: "1px solid #eee", borderRadius: "50%", width: 28, height: 28, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, outline: "none" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill={isWishlisted(p.id) ? "#e74c3c" : "none"} stroke={isWishlisted(p.id) ? "#e74c3c" : "#999"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); addToCart(p.id, p.name); }} style={{ background: "none", border: "1px solid #eee", borderRadius: "50%", width: 28, height: 28, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, outline: "none" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#27ae60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {showSearch && searchQuery.trim().length > 0 && searchResults.length === 0 && (
+              <div style={{ position: "absolute", top: 46, left: 0, right: 0, background: "#fff", border: "1px solid #eee", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", padding: "20px 16px", zIndex: 200, textAlign: "center", color: "#999", fontSize: 14 }}>
+                No products found
+              </div>
+            )}
+          </div>
+
+          {/* Right icons */}
+          <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+            <button style={{ padding: 5, border: "none", background: "rgba(36, 248, 36, 0.12)", borderRadius: 1000, cursor: "pointer", display: "flex", color: "#555" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#276749" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
+            <div style={{ width: 1, height: 24, background: "#E0E0E0", margin: "0 10px" }} />
+
+            {/* Reset */}
+            <button onClick={resetAll} style={{ position: "relative", padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" />
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+              </svg>
+            </button>
+
+            {/* Wishlist */}
+            <button style={{ position: "relative", padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555", marginLeft: 4 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+              <span style={{ position: "absolute", top: -1, left: -3, background: "#F5C518", color: "#333", fontSize: 9, fontWeight: 700, width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>{getWishlistCount()}</span>
+            </button>
+
+            {/* Cart */}
+            <button style={{ position: "relative", padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555", marginLeft: 4 }}>
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              <span style={{ position: "absolute", top: -1, left: -3, background: "#F5C518", color: "#333", fontSize: 9, fontWeight: 700, width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>{getCartCount()}</span>
+            </button>
+
+            <button style={{ padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555", marginLeft: 8 }}>
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="0" y1="1" x2="20" y2="1" /><line x1="0" y1="7" x2="15" y2="7" /><line x1="0" y1="13" x2="20" y2="13" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* NAVIGATION BAR */}
+      <div style={{ width: "100%", background: "#fff", padding: "6px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <ul style={{ border: "1px solid rgba(0, 0, 0, 0.1)", borderRadius: 8, display: "flex", alignItems: "center", listStyle: "none", margin: 0, padding: 0 }}>
+            {navItems.map((item) => (
+              <li key={item.label}>
+                <a href="#" onClick={(e) => { e.preventDefault(); setActiveNav(item.label); }}
+                  style={{ display: "flex", alignItems: "center", gap: 5, padding: "12px 16px", fontSize: 14, fontWeight: activeNav === item.label ? 600 : 500, color: activeNav === item.label ? "#1a6b4a" : "#333", textDecoration: "none", whiteSpace: "nowrap" }}>
+                  {item.label}
+                  {item.hasDropdown && <ChevronDown />}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "#333", whiteSpace: "nowrap" }}>
+              <TbRosetteDiscount style={{ fontSize: 20, color: "#1a6b4a" }} />
+              Weekly Discount!
+            </div>
+            <img src="/navbar/mobileno.webp" alt="Hotline Number +9888-256-666" style={{ height: 64, width: "auto", objectFit: "contain" }} />
+          </div>
+        </div>
+      </div>
+
+      {/* CATEGORY BAR */}
+      <div style={{ width: "100%", background: "#fff", borderBottom: "1px solid #eee", padding: "16px 0" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {categories.map((cat, index) => (
+            <div key={cat.label} style={{ display: "flex", alignItems: "center" }}>
+              <div onClick={() => scrollToFeatured(cat.filter)} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", padding: "4px 6px", borderRadius: 8 }}>
+                <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, background: "#eed2f4", padding: 10 }}>
+                  <img src={cat.img} alt={cat.label} style={{ width: 36, height: 36, objectFit: "contain" }} />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#333", whiteSpace: "nowrap" }}>{cat.label}</span>
+                  <span style={{ fontSize: 11, color: "#aaa" }}>{cat.count}</span>
+                </div>
+              </div>
+              {index < categories.length - 1 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 3, margin: "0 14px" }}>
+                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: "#ccc" }} />
+                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: "#ccc" }} />
+                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: "#ccc" }} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </header>
+  );
+}
