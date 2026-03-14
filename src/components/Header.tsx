@@ -42,13 +42,26 @@ function scrollToFeatured(filter?: string) {
 }
 
 export default function Header() {
-  const { getCartCount, getWishlistCount, resetAll, addToCart, toggleWishlist, isWishlisted } = useCart();
+  const { getCartCount, getWishlistCount, resetAll, addToCart, removeFromCart, toggleWishlist, isWishlisted, cart, wishlist } = useCart();
   const [showCategories, setShowCategories] = useState(false);
   const [activeNav, setActiveNav] = useState("Home");
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const catRef = useRef<HTMLDivElement>(null);
+  const cartRef = useRef<HTMLDivElement>(null);
+  const wishRef = useRef<HTMLDivElement>(null);
+
+  const cartProducts = cart.map((item) => {
+    const p = products.find((pr) => pr.id === item.id);
+    return p ? { ...p, quantity: item.quantity } : null;
+  }).filter(Boolean) as (typeof products[0] & { quantity: number })[];
+
+  const wishlistProducts = products.filter((p) => wishlist.includes(p.id));
+
+  const cartTotal = cartProducts.reduce((sum, p) => sum + p.discountPrice * p.quantity, 0);
 
   const searchResults = searchQuery.trim().length > 0
     ? products.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 8)
@@ -56,8 +69,11 @@ export default function Header() {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setShowSearch(false);
-      if (catRef.current && !catRef.current.contains(e.target as Node)) setShowCategories(false);
+      const target = e.target as Node;
+      if (searchRef.current && !searchRef.current.contains(target)) setShowSearch(false);
+      if (catRef.current && !catRef.current.contains(target)) setShowCategories(false);
+      if (cartRef.current && !cartRef.current.contains(target)) setShowCart(false);
+      if (wishRef.current && !wishRef.current.contains(target)) setShowWishlist(false);
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
@@ -162,21 +178,92 @@ export default function Header() {
             </button>
 
             {/* Wishlist */}
-            <button style={{ position: "relative", padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555", marginLeft: 4 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-              <span style={{ position: "absolute", top: -1, left: -3, background: "#F5C518", color: "#333", fontSize: 9, fontWeight: 700, width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>{getWishlistCount()}</span>
-            </button>
+            <div ref={wishRef} style={{ position: "relative", marginLeft: 4 }}>
+              <button onClick={() => { setShowWishlist(!showWishlist); setShowCart(false); }} style={{ position: "relative", padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555" }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                <span style={{ position: "absolute", top: -1, left: -3, background: "#F5C518", color: "#333", fontSize: 9, fontWeight: 700, width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>{getWishlistCount()}</span>
+              </button>
+              {showWishlist && (
+                <>
+                  <div onClick={() => setShowWishlist(false)} style={{ position: "fixed", inset: 0, zIndex: 199 }} />
+                  <div style={{ position: "absolute", top: 40, right: 0, background: "#fff", border: "1px solid #eee", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", padding: "8px 0", zIndex: 200, minWidth: 300, maxHeight: 400, overflowY: "auto" }}>
+                  {wishlistProducts.length === 0 ? (
+                    <div style={{ padding: "24px 16px", textAlign: "center", color: "#999", fontSize: 13 }}>Your wishlist is empty</div>
+                  ) : (
+                    <>
+                      <div style={{ padding: "8px 16px 6px", fontSize: 13, fontWeight: 600, color: "#333", borderBottom: "1px solid #f0f0f0" }}>
+                        Wishlist ({wishlistProducts.length} {wishlistProducts.length === 1 ? "item" : "items"})
+                      </div>
+                      {wishlistProducts.map((p) => (
+                        <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", fontSize: 13, color: "#333" }}>
+                          <img src={p.image} alt={p.name} style={{ width: 36, height: 36, objectFit: "contain", borderRadius: 4 }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 500, fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                            <div style={{ fontSize: 12, color: "#27ae60", fontWeight: 600 }}>${p.discountPrice.toFixed(2)}</div>
+                          </div>
+                          <button onClick={(e) => { e.stopPropagation(); addToCart(p.id, p.name); }} title="Add to cart" style={{ background: "none", border: "1px solid #eee", borderRadius: "50%", width: 26, height: 26, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#27ae60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>
+                          </button>
+                          <button onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id, p.name); }} title="Remove from wishlist" style={{ background: "none", border: "1px solid #eee", borderRadius: "50%", width: 26, height: 26, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                          </button>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
+                </>
+              )}
+            </div>
 
             {/* Cart */}
-            <button style={{ position: "relative", padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555", marginLeft: 4 }}>
-              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-              </svg>
-              <span style={{ position: "absolute", top: -1, left: -3, background: "#F5C518", color: "#333", fontSize: 9, fontWeight: 700, width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>{getCartCount()}</span>
-            </button>
+            <div ref={cartRef} style={{ position: "relative", marginLeft: 4 }}>
+              <button onClick={() => { setShowCart(!showCart); setShowWishlist(false); }} style={{ position: "relative", padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555" }}>
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                <span style={{ position: "absolute", top: -1, left: -3, background: "#F5C518", color: "#333", fontSize: 9, fontWeight: 700, width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>{getCartCount()}</span>
+              </button>
+              {showCart && (
+                <>
+                <div onClick={() => setShowCart(false)} style={{ position: "fixed", inset: 0, zIndex: 199 }} />
+                <div style={{ position: "absolute", top: 40, right: 0, background: "#fff", border: "1px solid #eee", borderRadius: 10, boxShadow: "0 8px 24px rgba(0,0,0,0.1)", padding: "8px 0", zIndex: 200, minWidth: 320, maxHeight: 420, overflowY: "auto" }}>
+                  {cartProducts.length === 0 ? (
+                    <div style={{ padding: "24px 16px", textAlign: "center", color: "#999", fontSize: 13 }}>Your cart is empty</div>
+                  ) : (
+                    <>
+                      <div style={{ padding: "8px 16px 6px", fontSize: 13, fontWeight: 600, color: "#333", borderBottom: "1px solid #f0f0f0" }}>
+                        Cart ({getCartCount()} {getCartCount() === 1 ? "item" : "items"})
+                      </div>
+                      {cartProducts.map((p) => (
+                        <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", fontSize: 13, color: "#333" }}>
+                          <img src={p.image} alt={p.name} style={{ width: 36, height: 36, objectFit: "contain", borderRadius: 4 }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 500, fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</div>
+                            <div style={{ fontSize: 12, color: "#27ae60", fontWeight: 600 }}>
+                              ${p.discountPrice.toFixed(2)} × {p.quantity} = ${(p.discountPrice * p.quantity).toFixed(2)}
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
+                            <button onClick={(e) => { e.stopPropagation(); removeFromCart(p.id); }} style={{ background: "#f5f5f5", border: "1px solid #eee", borderRadius: 4, width: 24, height: 24, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 600, color: "#666" }}>−</button>
+                            <span style={{ fontSize: 12, fontWeight: 600, minWidth: 16, textAlign: "center" }}>{p.quantity}</span>
+                            <button onClick={(e) => { e.stopPropagation(); addToCart(p.id, p.name); }} style={{ background: "#f5f5f5", border: "1px solid #eee", borderRadius: 4, width: 24, height: 24, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 600, color: "#666" }}>+</button>
+                          </div>
+                        </div>
+                      ))}
+                      <div style={{ padding: "10px 16px", borderTop: "1px solid #f0f0f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "#333" }}>Total:</span>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "#27ae60" }}>${cartTotal.toFixed(2)}</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+                </>
+              )}
+            </div>
 
             <button style={{ padding: 5, background: "none", border: "none", cursor: "pointer", display: "flex", color: "#555", marginLeft: 8 }}>
               <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
