@@ -43,7 +43,7 @@ export default function PromoSection() {
           <p style={{ fontSize: 13, color: "rgba(45,74,45,0.7)", margin: "0 0 6px" }}>baby Jem</p>
           <p style={{ fontSize: 12, color: "#555", margin: "0 0 0px" }}>Only</p>
           <p style={{ fontSize: 22, fontWeight: 800, color: "#1a1a2e", margin: "0 0 12px" }}>$12.99</p>
-          <button style={{
+          <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} style={{
             background: "#fff", color: "#333", border: "none",
             padding: "8px 20px", borderRadius: 20, fontSize: 12,
             fontWeight: 600, cursor: "pointer", width: "fit-content"
@@ -62,7 +62,7 @@ export default function PromoSection() {
           <p style={{ fontSize: 12, color: "#666", margin: "0 0 6px" }}>100% Organic</p>
           <p style={{ fontSize: 12, color: "#555", margin: "0 0 0px" }}>Only</p>
           <p style={{ fontSize: 22, fontWeight: 800, color: "#1a1a2e", margin: "0 0 12px" }}>$14.99</p>
-          <button style={{
+          <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} style={{
             background: "#fff", color: "#333", border: "none",
             padding: "8px 20px", borderRadius: 20, fontSize: 12,
             fontWeight: 600, cursor: "pointer"
@@ -80,7 +80,7 @@ export default function PromoSection() {
           <p style={{ fontSize: 12, color: "#666", margin: "0 0 6px" }}>2023 Colletions</p>
           <p style={{ fontSize: 12, color: "#555", margin: "0 0 0px" }}>Only</p>
           <p style={{ fontSize: 22, fontWeight: 800, color: "#1a1a2e", margin: "0 0 12px" }}>$5.99</p>
-          <button style={{
+          <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} style={{
             background: "#fff", color: "#333", border: "none",
             padding: "8px 20px", borderRadius: 20, fontSize: 12,
             fontWeight: 600, cursor: "pointer", width: "fit-content"

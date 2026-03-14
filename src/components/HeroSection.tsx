@@ -29,7 +29,7 @@ export default function HeroSection() {
                             </p>
                         </div>
 
-                        <button className="absolute top-24 w-fit" style={{
+                        <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} className="absolute top-24 w-fit" style={{
                             background: "#634C9F", color: "#fff", border: "none",
                             padding: "11px 26px", borderRadius: 800, fontSize: 14,
                             fontWeight: 600, cursor: "pointer"
@@ -58,7 +58,7 @@ export default function HeroSection() {
                         <p style={{ fontFamily: "math", fontSize: 22, fontWeight: 800, color: "white", margin: "0 0 8px", textDecoration: "underline" }}>baby Jem</p>
                         <p style={{ fontSize: 13, fontWeight: 700, color: "white", margin: "0 0 2px" }}>Only</p>
                         <p style={{ fontSize: 26, fontWeight: 800, color: "white", margin: "0 0 14px" }}>$12.99</p>
-                        <button style={{
+                        <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} style={{
                             background: "#fff", color: "#333", border: "none",
                             padding: "9px 22px", borderRadius: 20, fontSize: 13,
                             fontWeight: 600, cursor: "pointer", width: "fit-content"
@@ -81,7 +81,7 @@ export default function HeroSection() {
                                 <h4 style={{ fontSize: 15, fontWeight: 700, color: "#fff", margin: "0 0 3px" }}>New Baby Diaper</h4>
                                 <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.8)", margin: "0 0 12px" }}>Top Quality Product</p>
                             </div>
-                            <button className="self-center absolute bottom-5" style={{
+                            <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} className="self-center absolute bottom-5" style={{
                                 background: "#fff", color: "#333", border: "none",
                                 padding: "7px 18px", borderRadius: 60, fontSize: 12,
                                 fontWeight: 600, cursor: "pointer", width: "fit-content"
@@ -108,7 +108,7 @@ export default function HeroSection() {
               }}>
                 15% OFF
               </span> */}
-                            <button className="bottom-5 absolute" style={{
+                            <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} className="bottom-5 absolute" style={{
                                 background: "#fff", color: "#333", border: "none",
                                 padding: "7px 18px", borderRadius: 60, fontSize: 12,
                                 fontWeight: 600, cursor: "pointer", width: "fit-content"

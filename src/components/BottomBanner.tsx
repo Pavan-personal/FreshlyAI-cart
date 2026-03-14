@@ -37,7 +37,7 @@ export default function BottomBanner() {
             <p style={{ fontSize: 15, color: "rgba(30,30,50,0.6)", margin: "0 0 22px" }}>
               A different kind of grocery store
             </p>
-            <button style={{
+            <button onClick={() => document.getElementById("featured-products")?.scrollIntoView({ behavior: "smooth" })} style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               background: "#fff", color: "#333", border: "none",
               padding: "12px 24px", borderRadius: 800, fontSize: 14,
