@@ -83,7 +83,7 @@ function SmallCard({ item, timerIdx }: { item: typeof products[0]; timerIdx: num
             <span style={{ fontSize: 16, fontWeight: 700, color: "#27ae60" }}>${item.discountPrice.toFixed(2)}</span>
             <span style={{ fontSize: 13, color: "#aaa", textDecoration: "line-through" }}>${item.price.toFixed(2)}</span>
           </div>
-          <button onClick={() => addToCart(item.id, item.name)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: qty > 0 ? "#27ae60" : "none", border: qty > 0 ? "none" : "1px solid #e0e0e0", borderRadius: 6, padding: "6px 12px", fontSize: 13, color: qty > 0 ? "#fff" : "#555", cursor: "pointer", fontWeight: qty > 0 ? 600 : 400 }}>
+          <button onClick={() => addToCart(item.id, item.name)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: qty > 0 ? "#27ae60" : "none", border: qty > 0 ? "none" : "1px solid #5a2d82", borderRadius: 600, padding: "6px 12px", fontSize: 13, color: qty > 0 ? "#fff" : "#5a2d82", cursor: "pointer", fontWeight: qty > 0 ? 600 : 400 }}>
             {qty > 0 ? `Added to cart (${qty})` : "Add to cart"}
             <PlusIcon />
           </button>
@@ -136,7 +136,7 @@ function FeaturedCard() {
           </div>
           <p style={{ fontSize: 12, color: "#888", margin: 0 }}>available only: <strong>{aptamil.stock}</strong></p>
         </div>
-        <button onClick={() => addToCart(aptamil.id, aptamil.name)} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", background: qty > 0 ? "#27ae60" : "#5a2d82", color: "#fff", border: "none", borderRadius: 8, padding: 12, fontSize: 15, fontWeight: 600, cursor: "pointer", marginTop: "auto" }}>
+        <button onClick={() => addToCart(aptamil.id, aptamil.name)} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", background: qty > 0 ? "#27ae60" : "#5a2d82", color: "#fff", border: "none", borderRadius: 800, padding: 12, fontSize: 15, fontWeight: 600, cursor: "pointer", marginTop: "auto" }}>
           <CartIcon /> {qty > 0 ? `Added to cart (${qty})` : "Add to cart"}
         </button>
       </div>

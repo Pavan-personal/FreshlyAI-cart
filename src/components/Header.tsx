@@ -380,7 +380,7 @@ export default function Header() {
             {navItems.map((item) => (
               <li key={item.label}>
                 <a href="#" onClick={(e) => { e.preventDefault(); setActiveNav(item.label); }}
-                  style={{ display: "flex", alignItems: "center", gap: 5, padding: "12px 16px", fontSize: 14, fontWeight: activeNav === item.label ? 600 : 500, color: activeNav === item.label ? "#1a6b4a" : "#333", textDecoration: "none", whiteSpace: "nowrap" }}>
+                  style={{ display: "flex", alignItems: "center", gap: 5, padding: "12px 16px", fontSize: 14, fontWeight: activeNav === item.label ? 600 : 500, color: activeNav === item.label ? "#2e9e6a" : "#333", textDecoration: "none", whiteSpace: "nowrap" }}>
                   {item.label}
                   {item.hasDropdown && <ChevronDown />}
                 </a>
@@ -440,7 +440,7 @@ export default function Header() {
         <div style={{ padding: "12px 0" }}>
           {navItems.map((item) => (
             <a key={item.label} href="#" onClick={(e) => { e.preventDefault(); setActiveNav(item.label); setMobileMenuOpen(false); }}
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", fontSize: 15, fontWeight: activeNav === item.label ? 600 : 500, color: activeNav === item.label ? "#1a6b4a" : "#333", textDecoration: "none", borderBottom: "1px solid #f5f5f5" }}>
+              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", fontSize: 15, fontWeight: activeNav === item.label ? 600 : 500, color: activeNav === item.label ? "#2e9e6a" : "#333", textDecoration: "none", borderBottom: "1px solid #f5f5f5" }}>
               {item.label}
               {item.hasDropdown && <ChevronDown />}
             </a>
