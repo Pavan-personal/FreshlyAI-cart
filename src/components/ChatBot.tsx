@@ -9,12 +9,14 @@ interface Message {
   content: string;
 }
 
-const BotIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 8V4H8" /><rect x="2" y="8" width="20" height="12" rx="2" />
-    <circle cx="8" cy="14" r="1.5" fill="white" /><circle cx="16" cy="14" r="1.5" fill="white" />
-    <path d="M9 18h6" />
-  </svg>
+const BotIcon = ({ size = 28 }: { size?: number }) => (
+  <span style={{
+    fontFamily: "var(--font-pacifico), cursive",
+    fontSize: size,
+    color: "#fff",
+    lineHeight: 1,
+    userSelect: "none",
+  }}>F</span>
 );
 
 const CloseIcon = () => (
@@ -114,12 +116,12 @@ export default function ChatBot() {
     <>
       {!open && (
         <button onClick={() => setOpen(true)} aria-label="Open chat" style={{
-          position: "fixed", bottom: 24, right: 24, width: 56, height: 56,
+          position: "fixed", bottom: 24, right: 24, width: 64, height: 64,
           borderRadius: "50%", background: "#634C9F", border: "none", cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
           boxShadow: "0 4px 16px rgba(99,76,159,0.4)", zIndex: 1000,
         }}>
-          <BotIcon />
+          <BotIcon size={34} />
         </button>
       )}
 
@@ -136,7 +138,7 @@ export default function ChatBot() {
             display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <BotIcon />
+              <BotIcon size={26} />
               <div>
                 <div style={{ color: "#fff", fontSize: 15, fontWeight: 600 }}>Freshly Assistant</div>
                 <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 11 }}>Ask me about products, prices, cart</div>
