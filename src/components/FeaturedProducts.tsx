@@ -58,9 +58,33 @@ export default function FeaturedProducts() {
 
   return (
     <section id="featured-products" style={{ padding: "40px 0" }}>
+      <style>{`
+        .fp-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 16px;
+        }
+        .fp-scroll {
+          display: flex;
+          gap: 16px;
+          overflow-x: auto;
+          padding-bottom: 8px;
+          scrollbar-width: thin;
+        }
+        @media (max-width: 1024px) {
+          .fp-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+          .fp-grid { grid-template-columns: repeat(2, 1fr); }
+          .fp-header { flex-direction: column; align-items: flex-start !important; gap: 12px; }
+        }
+        @media (max-width: 480px) {
+          .fp-grid { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+        }
+      `}</style>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px" }}>
         {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }} className="fp-header">
           <h2 style={{ fontSize: 22, fontWeight: 700, color: "#1a1a2e", margin: 0 }}>Featured Products</h2>
           <div style={{ display: "flex", gap: 8 }}>
             {filters.map((f) => (
@@ -76,7 +100,7 @@ export default function FeaturedProducts() {
         </div>
 
         {/* Scrollable row for All, grid for filtered */}
-        <div style={active === "All" ? { display: "flex", gap: 16, overflowX: "auto", paddingBottom: 8, scrollbarWidth: "thin" as const } : { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
+        <div className={active === "All" ? "fp-scroll" : "fp-grid"}>
           {filtered.map((p) => {
             const disc = Math.round(((p.price - p.discountPrice) / p.price) * 100);
             const qty = getItemQty(p.id);
